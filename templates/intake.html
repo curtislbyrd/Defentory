@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="form-container">
+    <h2>Add New Detection</h2>
+    <form method="POST">
+        <div class="form-grid">
+
+            <!-- Basic Info -->
+            <div class="form-group">
+                <label>Detection Name <span class="required">*</span></label>
+                <input type="text" name="name" required placeholder="e.g. Suspicious PowerShell Execution">
+            </div>
+
+            <div class="form-group">
+                <label>Environment <span class="required">*</span></label>
+                <select name="environment" required>
+                    <option value="">-- Select --</option>
+                    <option value="Production">Production</option>
+                    <option value="Development">Development</option>
+                    <option value="Staging">Staging</option>
+                    <option value="Test">Test</option>
+                    <option value="Cloud">Cloud</option>
+                    <option value="Endpoint">Endpoint</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Log Source <span class="required">*</span></label>
+                <input type="text" name="log_source" required placeholder="e.g. Windows Event Logs, CrowdStrike, Okta">
+            </div>
+
+            <div class="form-group">
+                <label>SIEM Type <span class="required">*</span></label>
+                <select name="siem_type" required>
+                    <option value="">-- Select --</option>
+                    <option value="Splunk">Splunk</option>
+                    <option value="Elastic">Elastic</option>
+                    <option value="QRadar">IBM QRadar</option>
+                    <option value="Sentinel">Microsoft Sentinel</option>
+                    <option value="Sumo Logic">Sumo Logic</option>
+                    <option value="Panther">Panther</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+
+            <!-- MITRE ATT&CK Tactics (Multi-select) -->
+            <div class="form-group full-width">
+                <label>MITRE ATT&CK Tactics Covered (select all that apply)</label>
+                <select name="attack_tactics" multiple size="8">
+                    <option value="Reconnaissance">Reconnaissance</option>
+                    <option value="Resource Development">Resource Development</option>
+                    <option value="Initial Access">Initial Access</option>
+                    <option value="Execution">Execution</option>
+                    <option value="Persistence">Persistence</option>
+                    <option value="Privilege Escalation">Privilege Escalation</option>
+                    <option value="Defense Evasion">Defense Evasion</option>
+                    <option value="Credential Access">Credential Access</option>
+                    <option value="Discovery">Discovery</option>
+                    <option value="Lateral Movement">Lateral Movement</option>
+                    <option value="Collection">Collection</option>
+                    <option value="Command and Control">Command and Control</option>
+                    <option value="Exfiltration">Exfiltration</option>
+                    <option value="Impact">Impact</option>
+                </select>
+                <small>Hold Ctrl (⌘ on Mac) to select multiple</small>
+            </div>
+
+            <!-- MITRE D3FEND Tactics (Multi-select) -->
+            <div class="form-group full-width">
+                <label>MITRE D3FEND Defensive Tactics (select all that apply)</label>
+                <select name="defend_tactics" multiple size="6">
+                    <option value="Harden">Harden</option>
+                    <option value="Detect">Detect</option>
+                    <option value="Isolate">Isolate</option>
+                    <option value="Deceive">Deceive</option>
+                    <option value="Restore">Restore</option>
+                </select>
+                <small>Hold Ctrl (⌘ on Mac) to select multiple</small>
+            </div>
+
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn-primary">Save Detection</button>
+            <a href="{{ url_for('report') }}" class="btn-secondary">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

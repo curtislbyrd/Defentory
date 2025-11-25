@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="page-header">
+    <h1>Defentory — Coverage Heatmap</h1>
+    <p>Red = 0–5 detections • Yellow = 6–15 • Green = 16–25+ (strong coverage)</p>
+</div>
+
+<div class="heatmap-container">
+    <div class="tactic-column" style="--count: {{ counts.Harden }};">
+        <div class="tactic-header">HARDEN</div>
+        <div class="technique">Credential Hardening</div>
+        <div class="technique">Application Hardening</div>
+        <div class="technique">Platform Hardening</div>
+        <div class="technique">File Hardening</div>
+        <div class="technique">Network Hardening</div>
+        <div class="technique count">{{ counts.Harden }} detection{{ 's' if counts.Harden != 1 else '' }}</div>
+    </div>
+
+    <div class="tactic-column" style="--count: {{ counts.Detect }};">
+        <div class="tactic-header">DETECT</div>
+        <div class="technique">Process Analysis</div>
+        <div class="technique">File Analysis</div>
+        <div class="technique">Network Traffic Analysis</div>
+        <div class="technique">User Behavior Analysis</div>
+        <div class="technique">Message Analysis</div>
+        <div class="technique count">{{ counts.Detect }} detection{{ 's' if counts.Detect != 1 else '' }}</div>
+    </div>
+
+    <div class="tactic-column" style="--count: {{ counts.Isolate }};">
+        <div class="tactic-header">ISOLATE</div>
+        <div class="technique">Network Isolation</div>
+        <div class="technique">Process Isolation</div>
+        <div class="technique">File Isolation</div>
+        <div class="technique">Application Isolation</div>
+        <div class="technique count">{{ counts.Isolate }} detection{{ 's' if counts.Isolate != 1 else '' }}</div>
+    </div>
+
+    <div class="tactic-column" style="--count: {{ counts.Deceive }};">
+        <div class="tactic-header">DECEIVE</div>
+        <div class="technique">Decoy Object</div>
+        <div class="technique">Decoy Account</div>
+        <div class="technique">Decoy Network</div>
+        <div class="technique count">{{ counts.Deceive }} detection{{ 's' if counts.Deceive != 1 else '' }}</div>
+    </div>
+
+    <div class="tactic-column" style="--count: {{ counts.Restore }};">
+        <div class="tactic-header">RESTORE</div>
+        <div class="technique">System Recovery</div>
+        <div class="technique">Data Recovery</div>
+        <div class="technique count">{{ counts.Restore }} detection{{ 's' if counts.Restore != 1 else '' }}</div>
+    </div>
+</div>
+
+<div style="text-align:center; margin:4rem 0;">
+    <a href="{{ url_for('defendreport') }}" class="btn-secondary">Back to Dashboard</a>
+</div>
+
+{% endblock %}

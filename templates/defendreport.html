@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="report-header">
+    <h1>Defentory — Cyber Defensive Coverage Report</h1>
+</div>
+
+<div class="chart-container">
+    <canvas id="d3fendPieChart"></canvas>
+</div>
+
+<div class="stats-grid">
+    {% set counts = {'Harden': 0, 'Detect': 0, 'Isolate': 0, 'Deceive': 0, 'Restore': 0} %}
+    {% for det in detections %}
+        {% if det.defend_tactics %}
+            {% for t in det.defend_tactics.split(',') %}
+                {% set clean = t.strip() %}
+                {% if clean in counts %}{% set _ = counts.update({clean: counts[clean] + 1}) %}{% endif %}
+            {% endfor %}
+        {% endif %}
+    {% endfor %}
+
+    <div class="stat-card"><div class="stat-number">{{ counts.Harden }}</div><div class="stat-label">Harden</div></div>
+    <div class="stat-card accent"><div class="stat-number">{{ counts.Detect }}</div><div class="stat-label">Detect</div></div>
+    <div class="stat-card"><div class="stat-number">{{ counts.Isolate }}</div><div class="stat-label">Isolate</div></div>
+    <div class="stat-card"><div class="stat-number">{{ counts.Deceive }}</div><div class="stat-label">Deceive</div></div>
+    <div class="stat-card"><div class="stat-number">{{ counts.Restore }}</div><div class="stat-label">Restore</div></div>
+</div>
+
+<h2 style="margin:4rem 0 1.5rem;color:var(--primary)">All Detections</h2>
+<table class="detections-table">
+    <thead>
+        <tr><th>Name</th><th>Env</th><th>Log Source</th><th>SIEM</th><th>ATT&CK</th><th>D3FEND</th><th>Added</th></tr>
+    </thead>
+    <tbody>
+        {% for det in detections %}
+        <tr>
+            <td><strong>{{ det.name }}</strong></td>
+            <td>{{ det.environment }}</td>
+            <td>{{ det.log_source }}</td>
+            <td>{{ det.siem_type }}</td>
+            <td>{{ det.attack_tactics.replace(',', ', ') or '—' }}</td>
+            <td>{% for t in det.defend_tactics.split(',') %}<span class="tactic-tag">{{ t.strip() }}</span>{% endfor %}</td>
+            <td>{{ det.created_at[:10] }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    new Chart(document.getElementById('d3fendPieChart'), {
+        type: 'doughnut',
+        data: {
+            labels: ['Harden','Detect','Isolate','Deceive','Restore'],
+            datasets: [{ data: [{{counts.Harden}},{{counts.Detect}},{{counts.Isolate}},{{counts.Deceive}},{{counts.Restore}}],
+                backgroundColor: ['#4e79a7','#76b7b2','#f28e2b','#e15759','#59a14f'], borderWidth: 4, borderColor: '#fff' }]
+        },
+        options: { responsive: true, plugins: { legend: { position: 'bottom' }}}
+    });
+</script>
+{% endblock %}

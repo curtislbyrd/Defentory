@@ -39,7 +39,6 @@ Open your browser → **http://127.0.0.1:5001**
 
 Render: https://defentory-1.onrender.com/ 
 
-Open your browser → **http://127.0.0.1:5001**
 
 
 ## Tech Stack

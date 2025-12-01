@@ -1,6 +1,6 @@
 /* ============================================= */
 /*     D3FEND DETECTION INVENTORY — FINAL CSS    */
-/*     100% working — tested live Nov 2025       */
+/*     Heatmap 100% fixed • December 2025        */
 /* ============================================= */
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -48,33 +48,24 @@ main { padding: 2rem; max-width: 1200px; margin: 0 auto; }
 .hero h1 { font-size: 4rem; margin-bottom: 1rem; font-weight: 700; }
 .tagline { font-size: 1.6rem; opacity: 0.95; margin-bottom: 3rem; }
 .cta-buttons { display: flex; gap: 1.5rem; justify-content: center; flex-wrap: wrap; }
+
 .btn-primary, .btn-secondary { padding: 1rem 2.2rem; border-radius: 8px; font-weight: 600; text-decoration: none; transition: all 0.3s; }
 .btn-primary {
-    background: #60a5fa;           /* Tailwind blue-400 – modern cornflower */
-    color: white;
-    border: 2px solid #60a5fa;
+    background: #60a5fa; color: white; border: 2px solid #60a5fa;
     box-shadow: 0 4px 15px rgba(96, 165, 250, 0.3);
 }
 .btn-primary:hover {
-    background: #3b82f6;           /* blue-500 */
-    border-color: #3b82f6;
+    background: #3b82f6; border-color: #3b82f6;
     box-shadow: 0 12px 25px rgba(96, 165, 250, 0.5);
 }
 .btn-secondary {
-    background: #86efac;           /* Light green */
-    color: #166534;                /* Darker green text for contrast */
-    border: 2px solid #0447c2;     /* Medium green border */
-    padding: 1rem 2.2rem;
-    border-radius: 8px;
-    font-weight: 600;
-    text-decoration: none;
-    transition: all 0.3s;
+    background: #86efac; color: #166534; border: 2px solid #0447c2;
+    padding: 1rem 2.2rem; border-radius: 8px; font-weight: 600;
+    text-decoration: none; transition: all 0.3s;
     box-shadow: 0 4px 15px rgba(34, 197, 94, 0.2);
 }
-
 .btn-secondary:hover {
-    background: #22c55e;           /* Slightly darker green on hover */
-    color: white;
+    background: #22c55e; color: white;
     transform: translateY(-4px);
     box-shadow: 0 10px 25px rgba(34, 197, 94, 0.4);
 }
@@ -110,14 +101,79 @@ main { padding: 2rem; max-width: 1200px; margin: 0 auto; }
 .detections-table td { padding: 1rem; border-bottom: 1px solid var(--border); }
 .detections-table tr:hover { background: rgba(0,0,0,0.03); }
 
-.heatmap-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 2rem; max-width: 1200px; margin: 3rem auto; }
-.tactic-column { background: var(--surface); border-radius: 16px; overflow: hidden; box-shadow: 0 8px 25px rgba(0,0,0,0.12); border: 3px solid var(--heatmap-red); }
-.tactic-column[style*="25"] { border-color: var(--heatmap-green) !important; }
-.tactic-column[style*="6"] { border-color: var(--heatmap-yellow) !important; }
-.tactic-header { background: var(--primary); color: white; padding: 1.2rem; text-align: center; font-weight: bold; font-size: 1.3rem; }
-.technique { padding: 0.9rem 1.2rem; border-bottom: 1px solid var(--border); font-size: 0.95rem; }
-.technique.count { background: rgba(0,0,0,0.05); font-weight: bold; text-align: center; font-size: 1.1rem; color: var(--primary); }
+/* ====================== HEATMAP — FINAL & PERFECT ====================== */
+.heatmap-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 2rem;
+    max-width: 1200px;
+    margin: 3rem auto;
+}
 
+.tactic-column {
+    background: var(--surface);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+    border: 5px solid var(--heatmap-red);
+    position: relative;
+    transition: all 0.4s ease;
+}
+
+.tactic-column.red    { border-color: var(--heatmap-red); }
+.tactic-column.yellow { border-color: var(--heatmap-yellow); }
+.tactic-column.green  { border-color: var(--heatmap-green); }
+
+.tactic-column:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.22);
+}
+
+/* Subtle fill bar that grows with detection count */
+.tactic-column::before {
+    content: "";
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: calc(var(--count) / 25 * 100%);
+    background: linear-gradient(to top,
+        color-mix(in srgb, var(--heatmap-green), transparent 70%),
+        transparent
+    );
+    border-radius: 0 0 12px 12px;
+    pointer-events: none;
+    transition: height 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+    opacity: 0.35;
+}
+
+.tactic-column.red:hover::before    { background: linear-gradient(to top, #ef444470, transparent); }
+.tactic-column.yellow:hover::before { background: linear-gradient(to top, #f59e0b70, transparent); }
+.tactic-column.green:hover::before,
+.tactic-column.green:hover::before  { background: linear-gradient(to top, #10b98180, transparent); }
+
+.tactic-header {
+    background: var(--primary);
+    color: white;
+    padding: 1.2rem;
+    text-align: center;
+    font-weight: bold;
+    font-size: 1.3rem;
+}
+
+.technique {
+    padding: 0.9rem 1.2rem;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.95rem;
+}
+
+.technique.count {
+    background: rgba(0,0,0,0.05);
+    font-weight: bold;
+    text-align: center;
+    font-size: 1.1rem;
+    color: var(--primary);
+}
+
+/* Responsive */
 @media (max-width: 900px) {
     .desktop-nav { flex-direction: column; gap: 1.5rem; text-align: center; margin: 1rem 0; }
     .nav-container { flex-direction: column; gap: 1rem; }
@@ -125,57 +181,3 @@ main { padding: 2rem; max-width: 1200px; margin: 0 auto; }
     .form-grid { grid-template-columns: 1fr; }
 }
 
-/* === HOMEPAGE STYLES === */
-.hero {
-    background: linear-gradient(135deg, var(--primary) 0%, #0f2a52 100%);
-    color: white;
-    text-align: center;
-    padding: 8rem 2rem 6rem;
-    margin: -2rem -2rem 4rem;
-    border-radius: 0 0 20px 20px;
-}
-.hero h1 {
-    font-size: 4rem;
-    margin-bottom: 1rem;
-    font-weight: 700;
-}
-.tagline {
-    font-size: 1.6rem;
-    opacity: 0.95;
-    margin-bottom: 3rem;
-}
-.cta-buttons {
-    display: flex;
-    gap: 1.5rem;
-    justify-content: center;
-    flex-wrap: wrap;
-}
-.features-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 2rem;
-    margin: 4rem 0;
-}
-.feature-card {
-    background: var(--surface);
-    color: var(--text);
-    padding: 2.5rem 2rem;
-    border-radius: 16px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-    text-align: center;
-    border: 1px solid var(--border);
-    transition: all 0.3s;
-}
-.feature-card:hover { transform: translateY(-12px); }
-.icon { font-size: 4rem; margin-bottom: 1.2rem; }
-.feature-card h3 { color: var(--primary); margin-bottom: 1rem; font-size: 1.4rem; }
-
-.bottom-cta {
-    text-align: center;
-    background: var(--surface);
-    padding: 5rem 2rem;
-    border-top: 1px solid var(--border);
-    margin-top: 4rem;
-}
-.bottom-cta h2 { font-size: 2.5rem; color: var(--primary); margin-bottom: 1.5rem; }
-.btn-primary.large { font-size: 1.4rem; padding: 1.3rem 3.5rem; }

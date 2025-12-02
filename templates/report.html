@@ -1,6 +1,66 @@
 {% extends "base.html" %}
 {% block content %}
 <h1>All Detections ({{ detections|length }})</h1><br>
+<form method="get" class="filter-form" style="margin-bottom:1.5rem; display:flex; flex-wrap:wrap; gap:1rem; align-items:center;">
+    <input type="text" name="name" placeholder="Name" value="{{ request.args.get('name', '') }}" style="padding:0.6rem 1rem; border-radius:8px; border:1px solid var(--border);">
+    <select name="environment" style="padding:0.6rem 1rem; border-radius:8px; border:1px solid var(--border); min-width:140px;">
+        <option value="">Environment</option>
+        <option value="Production" {% if request.args.get('environment') == 'Production' %}selected{% endif %}>Production</option>
+        <option value="Development" {% if request.args.get('environment') == 'Development' %}selected{% endif %}>Development</option>
+        <option value="Staging" {% if request.args.get('environment') == 'Staging' %}selected{% endif %}>Staging</option>
+        <option value="Test" {% if request.args.get('environment') == 'Test' %}selected{% endif %}>Test</option>
+        <option value="Cloud" {% if request.args.get('environment') == 'Cloud' %}selected{% endif %}>Cloud</option>
+        <option value="Endpoint" {% if request.args.get('environment') == 'Endpoint' %}selected{% endif %}>Endpoint</option>
+    </select>
+    <select name="log_source" style="padding:0.6rem 1rem; border-radius:8px; border:1px solid var(--border); min-width:140px;">
+        <option value="">Log Source</option>
+        <option value="Windows Event Logs" {% if request.args.get('log_source') == 'Windows Event Logs' %}selected{% endif %}>Windows Event Logs</option>
+        <option value="CrowdStrike" {% if request.args.get('log_source') == 'CrowdStrike' %}selected{% endif %}>CrowdStrike</option>
+        <option value="Okta" {% if request.args.get('log_source') == 'Okta' %}selected{% endif %}>Okta</option>
+        <option value="AWS CloudTrail" {% if request.args.get('log_source') == 'AWS CloudTrail' %}selected{% endif %}>AWS CloudTrail</option>
+        <option value="Azure Activity Logs" {% if request.args.get('log_source') == 'Azure Activity Logs' %}selected{% endif %}>Azure Activity Logs</option>
+        <option value="Sysmon" {% if request.args.get('log_source') == 'Sysmon' %}selected{% endif %}>Sysmon</option>
+        <option value="Google Workspace" {% if request.args.get('log_source') == 'Google Workspace' %}selected{% endif %}>Google Workspace</option>
+        <option value="Other" {% if request.args.get('log_source') == 'Other' %}selected{% endif %}>Other</option>
+    </select>
+    <select name="siem_type" style="padding:0.6rem 1rem; border-radius:8px; border:1px solid var(--border); min-width:140px;">
+        <option value="">SIEM</option>
+        <option value="Splunk" {% if request.args.get('siem_type') == 'Splunk' %}selected{% endif %}>Splunk</option>
+        <option value="Elastic" {% if request.args.get('siem_type') == 'Elastic' %}selected{% endif %}>Elastic</option>
+        <option value="QRadar" {% if request.args.get('siem_type') == 'QRadar' %}selected{% endif %}>IBM QRadar</option>
+        <option value="Sentinel" {% if request.args.get('siem_type') == 'Sentinel' %}selected{% endif %}>Microsoft Sentinel</option>
+        <option value="Sumo Logic" {% if request.args.get('siem_type') == 'Sumo Logic' %}selected{% endif %}>Sumo Logic</option>
+        <option value="Panther" {% if request.args.get('siem_type') == 'Panther' %}selected{% endif %}>Panther</option>
+        <option value="Other" {% if request.args.get('siem_type') == 'Other' %}selected{% endif %}>Other</option>
+    </select>
+    <select name="attack_tactics" style="padding:0.6rem 1rem; border-radius:8px; border:1px solid var(--border); min-width:140px;">
+        <option value="">MITRE ATT&CK</option>
+        <option value="Reconnaissance" {% if request.args.get('attack_tactics') == 'Reconnaissance' %}selected{% endif %}>Reconnaissance</option>
+        <option value="Resource Development" {% if request.args.get('attack_tactics') == 'Resource Development' %}selected{% endif %}>Resource Development</option>
+        <option value="Initial Access" {% if request.args.get('attack_tactics') == 'Initial Access' %}selected{% endif %}>Initial Access</option>
+        <option value="Execution" {% if request.args.get('attack_tactics') == 'Execution' %}selected{% endif %}>Execution</option>
+        <option value="Persistence" {% if request.args.get('attack_tactics') == 'Persistence' %}selected{% endif %}>Persistence</option>
+        <option value="Privilege Escalation" {% if request.args.get('attack_tactics') == 'Privilege Escalation' %}selected{% endif %}>Privilege Escalation</option>
+        <option value="Defense Evasion" {% if request.args.get('attack_tactics') == 'Defense Evasion' %}selected{% endif %}>Defense Evasion</option>
+        <option value="Credential Access" {% if request.args.get('attack_tactics') == 'Credential Access' %}selected{% endif %}>Credential Access</option>
+        <option value="Discovery" {% if request.args.get('attack_tactics') == 'Discovery' %}selected{% endif %}>Discovery</option>
+        <option value="Lateral Movement" {% if request.args.get('attack_tactics') == 'Lateral Movement' %}selected{% endif %}>Lateral Movement</option>
+        <option value="Collection" {% if request.args.get('attack_tactics') == 'Collection' %}selected{% endif %}>Collection</option>
+        <option value="Command and Control" {% if request.args.get('attack_tactics') == 'Command and Control' %}selected{% endif %}>Command and Control</option>
+        <option value="Exfiltration" {% if request.args.get('attack_tactics') == 'Exfiltration' %}selected{% endif %}>Exfiltration</option>
+        <option value="Impact" {% if request.args.get('attack_tactics') == 'Impact' %}selected{% endif %}>Impact</option>
+    </select>
+    <select name="defend_tactics" style="padding:0.6rem 1rem; border-radius:8px; border:1px solid var(--border); min-width:140px;">
+        <option value="">D3FEND</option>
+        <option value="Harden" {% if request.args.get('defend_tactics') == 'Harden' %}selected{% endif %}>Harden</option>
+        <option value="Detect" {% if request.args.get('defend_tactics') == 'Detect' %}selected{% endif %}>Detect</option>
+        <option value="Isolate" {% if request.args.get('defend_tactics') == 'Isolate' %}selected{% endif %}>Isolate</option>
+        <option value="Deceive" {% if request.args.get('defend_tactics') == 'Deceive' %}selected{% endif %}>Deceive</option>
+        <option value="Restore" {% if request.args.get('defend_tactics') == 'Restore' %}selected{% endif %}>Restore</option>
+    </select>
+    <button type="submit" class="btn btn-primary" style="padding:0.6rem 1.2rem;">Filter</button>
+    <a href="{{ url_for('report') }}" class="btn btn-secondary" style="padding:0.6rem 1.2rem;">Clear</a>
+</form>
 <div class="d-flex justify-content-end">
     <a href="{{ url_for('export_csv') }}" class="btn btn-secondary me-2">Export CSV</a>
     <a href="{{ url_for('export_json') }}" class="btn btn-secondary">Export JSON</a>
@@ -13,13 +73,13 @@
     <tbody>
         {% for det in detections %}
         <tr>
-            <td>{{ det.name }}</td>
-            <td>{{ det.environment }}</td>
-            <td>{{ det.log_source }}</td>
-            <td>{{ det.siem_type }}</td>
-            <td>{{ det.attack_tactics or '—' }}</td>
-            <td>{{ det.defend_tactics or '—' }}</td>
-            <td>{{ det.created_at[:10] }}</td>
+            <td data-label="Name">{{ det.name }}</td>
+            <td data-label="Env">{{ det.environment }}</td>
+            <td data-label="Log Source">{{ det.log_source }}</td>
+            <td data-label="SIEM">{{ det.siem_type }}</td>
+            <td data-label="ATT&CK">{{ det.attack_tactics or '—' }}</td>
+            <td data-label="D3FEND">{{ det.defend_tactics or '—' }}</td>
+            <td data-label="Added">{{ det.created_at[:10] }}</td>
         </tr>
         {% endfor %}
     </tbody>

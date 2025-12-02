@@ -11,49 +11,62 @@
 </head>
 <body>
 
-<header>
-    <div class="nav-container">
-        <div class="logo">
-            <a href="{{ url_for('index') }}">
-                <img src="{{ url_for('static', filename='images/defentory.png') }}" 
-                     class="logo-img">
-            </a>
-        </div>
 
-        <nav class="desktop-nav">
+<nav class="navbar">
+    <div class="navbar-left">
+        <a href="{{ url_for('index') }}" class="navbar-logo">
+            <img src="{{ url_for('static', filename='images/defentory.png') }}" class="logo-img-small" alt="Defentory Logo">
+        </a>
+    </div>
+    <div class="navbar-right">
+        <button class="hamburger" id="hamburger-btn" aria-label="Menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+        <div class="navbar-links" id="navbar-links">
             <a href="{{ url_for('intake') }}">Add Detection</a>
             <a href="{{ url_for('report') }}">List View</a>
             <a href="{{ url_for('defendreport') }}">Dashboard</a>
             <a href="{{ url_for('heatmap') }}">Heatmap</a>
-        </nav>
-
-        <label class="switch">
-            <input type="checkbox" id="theme-switch">
-            <span class="slider">
-            </span>
-        </label>
+            <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
+                <span id="theme-icon" class="theme-icon">🌙</span>
+            </button>
+        </div>
     </div>
-</header>
+</nav>
 <main>
     {% block content %}{% endblock %}
 </main>
 
 
 <script>
-    const toggle = document.getElementById('theme-switch');
+    // Theme toggle with sun/moon
     const html = document.documentElement;
-    if (localStorage.getItem('theme') === 'dark' || (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-        html.dataset.theme = 'dark';
-        toggle.checked = true;
+    const themeToggle = document.getElementById('theme-toggle');
+    const themeIcon = document.getElementById('theme-icon');
+    function setThemeIcon(theme) {
+        themeIcon.textContent = theme === 'dark' ? '🌞' : '🌙';
     }
-    toggle.addEventListener('change', () => {
-        if (toggle.checked) {
-            html.dataset.theme = 'dark';
-            localStorage.setItem('theme', 'dark');
-        } else {
-            html.dataset.theme = 'light';
-            localStorage.setItem('theme', 'light');
-        }
+    function setTheme(theme) {
+        html.dataset.theme = theme;
+        localStorage.setItem('theme', theme);
+        setThemeIcon(theme);
+    }
+    // Initial theme
+    let theme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    setTheme(theme);
+    themeToggle.addEventListener('click', () => {
+        theme = html.dataset.theme === 'dark' ? 'light' : 'dark';
+        setTheme(theme);
+    });
+
+    // Hamburger menu
+    const hamburgerBtn = document.getElementById('hamburger-btn');
+    const navbarLinks = document.getElementById('navbar-links');
+    hamburgerBtn.addEventListener('click', () => {
+        navbarLinks.classList.toggle('active');
+        hamburgerBtn.classList.toggle('open');
     });
 </script>
 

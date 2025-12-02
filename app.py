@@ -56,10 +56,37 @@ def intake():
 
 @app.route('/report')
 def report():
+    name = request.args.get('name', '').strip()
+    environment = request.args.get('environment', '').strip()
+    log_source = request.args.get('log_source', '').strip()
+    siem_type = request.args.get('siem_type', '').strip()
+    attack_tactics = request.args.get('attack_tactics', '').strip()
+    defend_tactics = request.args.get('defend_tactics', '').strip()
+    query = "SELECT * FROM detections WHERE 1=1"
+    params = []
+    if name:
+        query += " AND name LIKE ?"
+        params.append(f"%{name}%")
+    if environment:
+        query += " AND environment LIKE ?"
+        params.append(f"%{environment}%")
+    if log_source:
+        query += " AND log_source LIKE ?"
+        params.append(f"%{log_source}%")
+    if siem_type:
+        query += " AND siem_type LIKE ?"
+        params.append(f"%{siem_type}%")
+    if attack_tactics:
+        query += " AND attack_tactics LIKE ?"
+        params.append(f"%{attack_tactics}%")
+    if defend_tactics:
+        query += " AND defend_tactics LIKE ?"
+        params.append(f"%{defend_tactics}%")
+    query += " ORDER BY created_at DESC"
     with sqlite3.connect('database.db') as conn:
         conn.row_factory = sqlite3.Row
         c = conn.cursor()
-        c.execute("SELECT * FROM detections ORDER BY created_at DESC")
+        c.execute(query, params)
         detections = c.fetchall()
     return render_template('report.html', detections=detections)
 

@@ -19,9 +19,10 @@ def init_db():
                         siem_type TEXT NOT NULL,
                         attack_tactics TEXT DEFAULT '',
                         defend_tactics TEXT DEFAULT '',
-                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                        validation TIMESTAMP
                     )''')
-        for col, definition in [("attack_tactics", "TEXT DEFAULT ''"), ("defend_tactics", "TEXT DEFAULT ''")]:
+        for col, definition in [("attack_tactics", "TEXT DEFAULT ''"), ("defend_tactics", "TEXT DEFAULT ''"), ("validation", "TIMESTAMP")]:
             try:
                 c.execute(f"ALTER TABLE detections ADD COLUMN {col} {definition}")
             except sqlite3.OperationalError:
@@ -44,12 +45,14 @@ def intake():
         attack_tactics = ','.join(request.form.getlist('attack_tactics'))
         defend_tactics = ','.join(request.form.getlist('defend_tactics'))
 
+        created_at = datetime.now()
+        validation = (created_at.replace(microsecond=0) + timedelta(days=182)).strftime('%Y-%m-%d %H:%M:%S')
         with sqlite3.connect('database.db') as conn:
             c = conn.cursor()
             c.execute("""INSERT INTO detections 
-                         (name, environment, log_source, siem_type, attack_tactics, defend_tactics) 
-                         VALUES (?, ?, ?, ?, ?, ?)""",
-                      (name, environment, log_source, siem_type, attack_tactics, defend_tactics))
+                         (name, environment, log_source, siem_type, attack_tactics, defend_tactics, created_at, validation) 
+                         VALUES (?, ?, ?, ?, ?, ?, ?, ?)""",
+                      (name, environment, log_source, siem_type, attack_tactics, defend_tactics, created_at.strftime('%Y-%m-%d %H:%M:%S'), validation))
             conn.commit()
         return redirect(url_for('defendreport'))
     return render_template('intake.html')
@@ -62,7 +65,7 @@ def report():
     siem_type = request.args.get('siem_type', '').strip()
     attack_tactics = request.args.get('attack_tactics', '').strip()
     defend_tactics = request.args.get('defend_tactics', '').strip()
-    query = "SELECT * FROM detections WHERE 1=1"
+    query = "SELECT *, DATE(created_at, '+6 months') as validation FROM detections WHERE 1=1"
     params = []
     if name:
         query += " AND name LIKE ?"
@@ -95,7 +98,7 @@ def defendreport():
     with sqlite3.connect('database.db') as conn:
         conn.row_factory = sqlite3.Row
         c = conn.cursor()
-        c.execute("SELECT * FROM detections ORDER BY created_at DESC")
+        c.execute("SELECT *, DATE(created_at, '+6 months') as validation FROM detections ORDER BY created_at DESC")
         detections = c.fetchall()
     return render_template('defendreport.html', detections=detections)
 

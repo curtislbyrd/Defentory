@@ -48,6 +48,7 @@
 </table>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
 <script>
     new Chart(document.getElementById('d3fendPieChart'), {
         type: 'doughnut',
@@ -56,7 +57,21 @@
             datasets: [{ data: [{{counts.Harden}},{{counts.Detect}},{{counts.Isolate}},{{counts.Deceive}},{{counts.Restore}}],
                 backgroundColor: ['#4e79a7','#76b7b2','#f28e2b','#e15759','#59a14f'], borderWidth: 4, borderColor: '#fff' }]
         },
-        options: { responsive: true, plugins: { legend: { position: 'bottom' }}}
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { position: 'bottom' },
+                datalabels: {
+                    color: '#222',
+                    font: { weight: 'bold', size: 16 },
+                    textShadow: '2px 2px 8px rgba(34,34,34,0.18)',
+                    formatter: function(value, context) {
+                        return context.chart.data.labels[context.dataIndex];
+                    }
+                }
+            }
+        },
+        plugins: [ChartDataLabels]
     });
 </script>
 {% endblock %}

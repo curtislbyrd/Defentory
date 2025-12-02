@@ -9,10 +9,10 @@ $ = must have
 ### 1. Detection Content Metadata
 | Field                    | Purpose                                                  |
 |--------------------------|----------------------------------------------------------|
-| Rule / Analytic ID $     | Unique identifier across the enterprise                  |
+| Rule ID $     | Unique identifier across the enterprise                  |
 | Rule Name $                | Human-readable name                                      |
 | Implementation Status          | Deployed, Partial, Planned, Not Implemented                     |
-| Detection Logic Summary $ | Short description (e.g., “Detects PowerShell downloading from pastebin”) |
+| Detection Summary $ | Short description (e.g., “Detects PowerShell downloading from pastebin”) |
 | Detection Code  $      | Code for the detection (If using Detections as Code)                        |
 | Detection Type  $        |                                                    Analytic, Behavioral, Anomaly, Threat Intel Match, ML-based |
 | Detection Confidence $   | Overall reliability (High / Medium / Low) based on FP rate, visibility, etc.  |

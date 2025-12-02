@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="images/defentory.png" alt="Defentory" width="300"/>
+  <img src="/static/images/defentory.png" alt="Defentory" width="300"/>
   <br>
   <em><strong>Because knowing your defenses is the new offense.</strong></em>
 </p>
